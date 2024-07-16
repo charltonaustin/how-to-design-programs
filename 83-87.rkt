@@ -41,12 +41,19 @@
        (editor-cursor editor)
        (editor-cursor-color editor))))
 
+(define (too-large? editor)
+  (< 200
+     (+ (image-width (text (editor-pre editor) 11 "black"))
+        (image-width (text (editor-post editor) 11 "black")))))
+
 (define (append-pre editor character)
-  (make-editor
-   (string-append (editor-pre editor) character)
-   (editor-post editor)
-   (editor-cursor editor)
-   (editor-cursor-color editor)))
+  (if (too-large? editor)
+      editor
+      (make-editor
+       (string-append (editor-pre editor) character)
+       (editor-post editor)
+       (editor-cursor editor)
+       (editor-cursor-color editor))))
 
 (define (insert-head-post editor character)
   (make-editor
@@ -80,16 +87,16 @@
 
 (define (tock editor)
   (cond [(string=? "white" (editor-cursor-color editor))
-     (make-editor
-      (editor-pre editor)
-      (editor-post editor)
-      (rectangle 1 16 "solid" "black")
-      "black")]
-    [else (make-editor
-      (editor-pre editor)
-      (editor-post editor)
-      (rectangle 1 16 "solid" "white")
-      "white")]))
+         (make-editor
+          (editor-pre editor)
+          (editor-post editor)
+          (rectangle 1 16 "solid" "black")
+          "black")]
+        [else (make-editor
+               (editor-pre editor)
+               (editor-post editor)
+               (rectangle 1 16 "solid" "white")
+               "white")]))
 
 (define (edit editor keyevent)
   (cond 
@@ -103,7 +110,7 @@
   (big-bang (make-editor pre post (rectangle 1 16 "solid" "black") "black")
     [to-draw render]
     [on-key edit]
-    [on-tick tock]))
+    [on-tick tock 1/2]))
 
 (provide delete-pre
          append-pre
