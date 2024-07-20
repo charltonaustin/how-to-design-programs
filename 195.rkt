@@ -41,6 +41,15 @@ with "z".
 
 (define (starts-with# letter)
   (hash-ref LETTER-COUNT letter))
+
+(define (compare-pairs p1 p2)
+  (> (cdr p1) (cdr p2)))
+
+(define (most-frequent)
+  (sort (map (lambda (value)
+         (cons value (starts-with# value)))
+       LETTERS)
+        compare-pairs))
 #|
 > (starts-with# #\e)
 8739
